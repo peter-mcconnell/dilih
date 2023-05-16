@@ -94,6 +94,10 @@ func main() {
 			e.ProcessingTime = binary.LittleEndian.Uint32(record.RawSample[8:12])
 			// type in the last byte
 			e.Type = uint8(record.RawSample[12])
+
+			// the following is not efficient - just some demo sugar to clearly communicate what's going on
+			// in a real world scenario, you'd probably want to use a ring buffer and a single counter, or
+			// post-process the processing averages separately
 			if e.Type == 2 {
 				buckets[254] += uint64(e.ProcessingTime)
 			}
