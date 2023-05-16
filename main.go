@@ -1,8 +1,6 @@
 package main
 
 import (
-	_ "embed"
-	"bytes"
 	"fmt"
 	"net"
 	"os"
@@ -13,12 +11,9 @@ import (
 	"github.com/cilium/ebpf/link"
 )
 
-//go:embed bpf/lb_kern.o
-var bpfObject []byte
-
 func main() {
 	// Open compiled BPF object file.
-	spec, err := ebpf.LoadCollectionSpecFromReader(bytes.NewReader(bpfObject))
+	spec, err := ebpf.LoadCollectionSpec("bpf/lb_kern.o")
 	if err != nil {
 		panic(err)
 	}
