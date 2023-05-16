@@ -1,26 +1,20 @@
-drop it like its hot
-====================
+dilih
+=====
+
+_drop it like it's hot_
 
 ![dilih balancy logo](./media/logo.png "drop it like its hot")
 
-build bpf module
-----------------
+build everything (bpf program, go program, docker image)
+--------------------------------------------------------
 
 ```sh
-(cd bpf && sudo make dilih_kern.o)
-```
-
-build golang code
------------------
-
-```sh
-CGO_ENABLED=0 go build
+make
 ```
 
 running with docker
 -------------------
 
 ```sh
-docker build -t=dilih .
-docker run --net=host --cap-add NET_ADMIN --cap-add BPF --cap-add PERFMON -u0 -e INTERFACE=ens160 --rm dilih
+INTERFACE=eth0 make run_docker
 ```
