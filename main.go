@@ -94,7 +94,7 @@ func main() {
 		panic(fmt.Sprintf("Failed to create perf event reader: %v\n", err))
 	}
 	defer perfEvent.Close()
-	buckets := map[uint8]uint64{
+	buckets := map[uint8]uint32{
 		1:   0, // bpf program entered
 		2:   0, // bpf program dropped
 		3:   0, // bpf program passed
@@ -123,15 +123,16 @@ func main() {
 			e.ProcessingTime = binary.LittleEndian.Uint32(record.RawSample[8:12])
 			// type in the last byte
 			e.Type = uint8(record.RawSample[12])
+			buckets[e.Type]++
 
-			if e.Type == 2 {
+			if e.Type == 0 {
+				continue
+			} else if e.Type == 2 {
 				processingTimeDropped.add(e.ProcessingTime)
-			}
-			if e.Type == 3 {
+			} else if e.Type == 3 {
 				processingTimePassed.add(e.ProcessingTime)
 			}
 
-			buckets[e.Type]++
 			fmt.Print("\033[H\033[2J")
 			fmt.Printf("total: %d. passed: %d. dropped: %d. passed processing time avg (ns): %d. dropped processing time avg (ns): %d\n", buckets[1], buckets[3], buckets[2], processingTimePassed.avg(), processingTimeDropped.avg())
 		}
