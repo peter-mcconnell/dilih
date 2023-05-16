@@ -19,7 +19,7 @@ clean:
 	$(MAKE) -C bpf clean
 
 run_docker: build_docker
-	docker run --net=host --cap-add NET_ADMIN --cap-add BPF --cap-add PERFMON -u0 -e INTERFACE=$(DEV) --rm pemcconnell/dilih:$(TAG)
+	docker run --net=host --cap-add SYS_ADMIN -u0 -e INTERFACE=$(DEV) --rm pemcconnell/dilih:$(TAG)
 
 push_docker: build_docker
 	docker push pemcconnell/dilih:$(TAG)

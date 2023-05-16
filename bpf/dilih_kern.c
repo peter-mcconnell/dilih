@@ -1,8 +1,9 @@
 #include "dilih_kern.h"
 
 struct perf_trace_event {
-	__u64 timestamp;
-	__u32 type;
+	__u64 timestamp; // time elapsed since boot, excluding suspend time. see https://www.man7.org/linux/man-pages/man7/bpf-helpers.7.html
+	__u32 processing_time_ns;
+	__u8 type;
 };
 
 struct {
@@ -20,13 +21,16 @@ int xdp_dilih(struct xdp_md *ctx)
 	// perf event for entering xdp program
 	e.timestamp = bpf_ktime_get_ns();
 	e.type = 1;
+	e.processing_time_ns = 0;
 	bpf_perf_event_output(ctx, &output_map, BPF_F_CURRENT_CPU, &e, sizeof(e));
 	
 	if (bpf_get_prandom_u32() % 2 == 0) {
 
 		// perf event for dropping packet
 		e.type = 2;
-		e.timestamp = bpf_ktime_get_ns();
+		__u64 ts = bpf_ktime_get_ns();
+		e.processing_time_ns = ts - e.timestamp;
+		e.timestamp = ts;
 		bpf_perf_event_output(ctx, &output_map, BPF_F_CURRENT_CPU, &e, sizeof(e));
 
 		bpf_printk("dropping packet");
@@ -35,7 +39,10 @@ int xdp_dilih(struct xdp_md *ctx)
 
 	// perf event for passing packet
 	e.type = 3;
-	e.timestamp = bpf_ktime_get_ns();
+	__u64 ts = bpf_ktime_get_ns();
+	e.processing_time_ns = ts - e.timestamp;
+	e.timestamp = ts;
+
 	bpf_perf_event_output(ctx, &output_map, BPF_F_CURRENT_CPU, &e, sizeof(e));
 	bpf_printk("passing packet");
 
