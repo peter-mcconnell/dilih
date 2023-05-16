@@ -1,5 +1,7 @@
-load balancer
+loady balancy
 =============
+
+![loady balancy logo](./media/logo.png "loady balancy")
 
 build bpf module
 ----------------
