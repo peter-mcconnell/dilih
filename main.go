@@ -13,7 +13,7 @@ import (
 
 func main() {
 	// Open compiled BPF object file.
-	spec, err := ebpf.LoadCollectionSpec("bpf/lb_kern.o")
+	spec, err := ebpf.LoadCollectionSpec("bpf/dilih_kern.o")
 	if err != nil {
 		panic(err)
 	}
@@ -25,10 +25,10 @@ func main() {
 	}
 	defer coll.Close()
 
-	// Get program named "xdp_lb" from the collection.
-	prog := coll.Programs["xdp_load_balancer"]
+	// Get program named "dilih" from the collection.
+	prog := coll.Programs["xdp_dilih"]
 	if prog == nil {
-		panic("No program named 'xdp_load_balancer' found in collection")
+		panic("No program named 'xdp_dilih' found in collection")
 	}
 
 	// Open a network interface.

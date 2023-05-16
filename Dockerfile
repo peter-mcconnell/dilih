@@ -1,4 +1,4 @@
 FROM scratch
-COPY loadbalancer /loadbalancer
-COPY bpf/lb_kern.o /bpf/lb_kern.o
-CMD ["/loadbalancer"]
+COPY dilih /dilih
+COPY bpf/dilih_kern.o /bpf/dilih_kern.o
+CMD ["/dilih"]

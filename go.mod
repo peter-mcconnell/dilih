@@ -1,4 +1,4 @@
-module github.com/peter-mcconnell/loadbalancer
+module github.com/peter-mcconnell/dilih
 
 go 1.20
 

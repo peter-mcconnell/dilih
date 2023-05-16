@@ -1,4 +1,4 @@
-#include "lb_kern.h"
+#include "dilih_kern.h"
 
 #define IP_ADDRESS(x) (unsigned int)(172 + (17 << 8) + (0 << 16) + (x << 24))
 
@@ -8,7 +8,7 @@
 #define LB 5
 
 SEC("xdp_lb")
-int xdp_load_balancer(struct xdp_md *ctx)
+int xdp_dilih(struct xdp_md *ctx)
 {
 	bpf_printk("got something");
 

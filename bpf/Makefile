@@ -1,10 +1,10 @@
-TARGET = lb
+TARGET = dilih
 BPF_TARGET = ${TARGET:=_kern}
 BPF_C = ${BPF_TARGET:=.c}
 BPF_OBJ = ${BPF_C:.c=.o}
 
 BPF_PINNED_PATH := /sys/fs/bpf/$(TARGET)
-XDP_NAME := xdpgeneric
+XDP_NAME := dilih
 DEV := ens160
 
 xdp: $(BPF_OBJ)
