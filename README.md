@@ -30,7 +30,7 @@ running with docker
 -------------------
 
 ```sh
-INTERFACE=eth0 make run_docker
+DEV=eth0 make run_docker
 
 # you should now see xdpgeneric on the given interface - ensure you clean this up !
 ```
@@ -39,5 +39,5 @@ clean
 -----
 
 ```sh
-make clean
+DEV=eth0 make clean
 ```

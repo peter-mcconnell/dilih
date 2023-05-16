@@ -1,7 +1,7 @@
 .PHONY: build build_bpf build_go build_docker clean run_docker push_docker
 .DEFAULT_GOAL = build
 
-INTERFACE := ens160
+DEV := ens160
 TAG := v0.0.1-pre
 
 build_bpf:
@@ -19,7 +19,7 @@ clean:
 	$(MAKE) -C bpf clean
 
 run_docker: build_docker
-	docker run --net=host --cap-add NET_ADMIN --cap-add BPF --cap-add PERFMON -u0 -e INTERFACE=$(INTERFACE) --rm pemcconnell/dilih:$(TAG)
+	docker run --net=host --cap-add NET_ADMIN --cap-add BPF --cap-add PERFMON -u0 -e INTERFACE=$(DEV) --rm pemcconnell/dilih:$(TAG)
 
 push_docker: build_docker
 	docker push pemcconnell/dilih:$(TAG)
