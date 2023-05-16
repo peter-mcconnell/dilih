@@ -1,6 +1,8 @@
 dilih
 =====
 
+A simple example project that shows how to build eBPF programs in C and load them with Golang.
+
 _drop it like it's hot_
 
 ![dilih balancy logo](./media/logo.png "drop it like its hot")
