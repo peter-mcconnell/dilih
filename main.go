@@ -19,6 +19,33 @@ type event struct {
 	Type           uint8
 }
 
+const ringBufferSize = 128 // size of ring buffer used to calculate average processing times
+type ringBuffer struct {
+	data [ringBufferSize]uint32
+	start int
+	size int
+}
+
+func (rb *ringBuffer) add(val uint32) {
+	if rb.size < ringBufferSize {
+		rb.size++
+	} else {
+		rb.size = 1
+	}
+	rb.data[rb.size - 1] = val
+}
+
+func (rb *ringBuffer) avg() uint32 {
+	if rb.size == 0 {
+		return 0
+	}
+	sum := uint32(0)
+	for i := 0; i < rb.size; i++ {
+		sum += uint32(rb.data[i])
+	}
+	return sum / uint32(rb.size)
+}
+
 func main() {
 	spec, err := ebpf.LoadCollectionSpec("bpf/dilih_kern.o")
 	if err != nil {
@@ -71,9 +98,11 @@ func main() {
 		1:   0, // bpf program entered
 		2:   0, // bpf program dropped
 		3:   0, // bpf program passed
-		254: 0, // dropped processing sum
-		255: 0, // passed processing sum
 	}
+
+	processingTimePassed := &ringBuffer{}
+	processingTimeDropped := &ringBuffer{}
+
 	go func() {
 		// var event event
 		for {
@@ -95,26 +124,16 @@ func main() {
 			// type in the last byte
 			e.Type = uint8(record.RawSample[12])
 
-			// the following is not efficient - just some demo sugar to clearly communicate what's going on
-			// in a real world scenario, you'd probably want to use a ring buffer and a single counter, or
-			// post-process the processing averages separately
 			if e.Type == 2 {
-				buckets[254] += uint64(e.ProcessingTime)
+				processingTimeDropped.add(e.ProcessingTime)
 			}
 			if e.Type == 3 {
-				buckets[255] += uint64(e.ProcessingTime)
-			}
-			var avgProcessingTimePassed, avgProcessingTimeDropped uint64
-			if buckets[3] != 0 {
-				avgProcessingTimePassed = buckets[255] / buckets[3]
-			}
-			if buckets[2] != 0 {
-				avgProcessingTimeDropped = buckets[254] / buckets[2]
+				processingTimePassed.add(e.ProcessingTime)
 			}
 
 			buckets[e.Type]++
 			fmt.Print("\033[H\033[2J")
-			fmt.Printf("total: %d. passed: %d. dropped: %d. passed processing time avg: %d. dropped processing time avg: %d\n", buckets[1], buckets[3], buckets[2], avgProcessingTimePassed, avgProcessingTimeDropped)
+			fmt.Printf("total: %d. passed: %d. dropped: %d. passed processing time avg: %d. dropped processing time avg: %d\n", buckets[1], buckets[3], buckets[2], processingTimePassed.avg(), processingTimeDropped.avg())
 		}
 	}()
 
