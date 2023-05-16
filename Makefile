@@ -14,5 +14,8 @@ build_docker:
 
 build: build_bpf build_go build_docker
 
+clean:
+	(cd bpf && sudo make clean)
+
 run_docker:
 	docker run --net=host --cap-add NET_ADMIN --cap-add BPF --cap-add PERFMON -u0 -e INTERFACE=$(INTERFACE) --rm dilih
