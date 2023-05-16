@@ -1,0 +1,4 @@
+---
+Checks: '-*, bugprone-misplaced-pointer-arithmetic-in-alloc, bugprone-sizeof-expression'
+FormatStyle: file
+...
