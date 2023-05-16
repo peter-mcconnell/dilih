@@ -22,6 +22,13 @@ This project was built and tested in the following environment:
 build everything (bpf program, go program, docker image)
 --------------------------------------------------------
 
+If you haven't already, ensure the libbpf submodule is pulled:
+```sh
+$ git submodule init
+$ git submodule update
+```
+
+Then proceed to build:
 ```sh
 $ make
 ```
