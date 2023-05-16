@@ -27,7 +27,7 @@ $(BPF_OBJ): %.o: %.c
 	llc -march=bpf -filetype=obj -O2 -o $@ ${@:.o=.ll}
 
 clean:
-	bpftool net detach $(XDP_NAME) dev $(DEV)
+	-bpftool net detach $(XDP_NAME) dev $(DEV)
 	rm -f $(BPF_PINNED_PATH)
-	rm $(BPF_OBJ)
-	rm ${BPF_OBJ:.o=.ll}
+	rm -f $(BPF_OBJ)
+	rm -f ${BPF_OBJ:.o=.ll}
