@@ -133,7 +133,7 @@ func main() {
 
 			buckets[e.Type]++
 			fmt.Print("\033[H\033[2J")
-			fmt.Printf("total: %d. passed: %d. dropped: %d. passed processing time avg: %d. dropped processing time avg: %d\n", buckets[1], buckets[3], buckets[2], processingTimePassed.avg(), processingTimeDropped.avg())
+			fmt.Printf("total: %d. passed: %d. dropped: %d. passed processing time avg (ns): %d. dropped processing time avg (ns): %d\n", buckets[1], buckets[3], buckets[2], processingTimePassed.avg(), processingTimeDropped.avg())
 		}
 	}()
 
