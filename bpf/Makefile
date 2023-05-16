@@ -15,6 +15,7 @@ xdp: $(BPF_OBJ)
 
 $(BPF_OBJ): %.o: %.c
 	clang -S \
+		-g \
 		-target bpf \
 		-D __BPF_TRACING__ \
 	  -I../libbpf/src\
@@ -28,6 +29,6 @@ $(BPF_OBJ): %.o: %.c
 
 clean:
 	-bpftool net detach $(XDP_NAME) dev $(DEV)
-	rm -f $(BPF_PINNED_PATH)
+	sudo rm -f $(BPF_PINNED_PATH)
 	rm -f $(BPF_OBJ)
 	rm -f ${BPF_OBJ:.o=.ll}
