@@ -23,21 +23,41 @@ build everything (bpf program, go program, docker image)
 --------------------------------------------------------
 
 ```sh
-make
+$ make
 ```
 
 running with docker
 -------------------
 
 ```sh
-DEV=eth0 make run_docker
+$ DEV=eth0 make run_docker
 
 # you should now see xdpgeneric on the given interface - ensure you clean this up !
 ```
+
+testing
+-------
+
+With the program running you should start to see disruption. For example, when applied to the hosts interface used for the internet connection we can see ~50% packet loss:
+
+```sh
+$ ping -c8 8.8.8.8
+PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+64 bytes from 8.8.8.8: icmp_seq=3 ttl=115 time=20.6 ms
+64 bytes from 8.8.8.8: icmp_seq=4 ttl=115 time=28.1 ms
+64 bytes from 8.8.8.8: icmp_seq=7 ttl=115 time=20.8 ms
+64 bytes from 8.8.8.8: icmp_seq=8 ttl=115 time=21.8 ms
+
+--- 8.8.8.8 ping statistics ---
+8 packets transmitted, 4 received, 50% packet loss, time 7073ms
+rtt min/avg/max/mdev = 20.557/22.809/28.085/3.078 ms
+```
+
+_Note: it may not actually be 50% each time - the logic depends on randomness._
 
 clean
 -----
 
 ```sh
-DEV=eth0 make clean
+$ DEV=eth0 make clean
 ```
