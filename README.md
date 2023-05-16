@@ -40,8 +40,7 @@ running with docker
 
 ```sh
 $ DEV=eth0 make run_docker
-
-# you should now see xdpgeneric on the given interface - ensure you clean this up !
+# press Ctrl+C when you want to resume normality
 ```
 
 testing
