@@ -1,0 +1,3 @@
+.*
+!loadbalancer
+!bpf/lb_kern.o

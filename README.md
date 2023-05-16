@@ -12,5 +12,12 @@ build golang code
 -----------------
 
 ```sh
-go build
+CGO_ENABLED=0 go build
+```
+
+running with docker
+-------------------
+
+```sh
+docker run --net=host --cap-add NET_ADMIN --cap-add BPF --cap-add PERFMON -u0 -e INTERFACE=ens160 --rm loadbalancer
 ```
