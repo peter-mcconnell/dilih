@@ -106,9 +106,9 @@ func main() {
 	}
 	defer perfEvent.Close()
 	buckets := map[uint8]uint32{
-		1: 0, // bpf program entered
-		2: 0, // bpf program dropped
-		3: 0, // bpf program passed
+		TYPE_ENTER: 0, // bpf program entered
+		TYPE_DROP: 0, // bpf program dropped
+		TYPE_PASS: 0, // bpf program passed
 	}
 
 	processingTimePassed := &ringBuffer{}
