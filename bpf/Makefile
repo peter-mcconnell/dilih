@@ -17,12 +17,8 @@ $(BPF_OBJ): %.o: %.c
 	clang -S \
 		-g \
 		-target bpf \
-		-D __BPF_TRACING__ \
 	  -I../libbpf/src\
 		-Wall \
-		-Wno-unused-value \
-		-Wno-pointer-sign \
-		-Wno-compare-distinct-pointer-types \
 		-Werror \
 		-O2 -emit-llvm -c -o ${@:.o=.ll} $<
 	llc -march=bpf -filetype=obj -O2 -o $@ ${@:.o=.ll}
