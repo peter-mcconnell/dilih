@@ -8,10 +8,10 @@ XDP_NAME := dilih
 DEV := ens160
 
 xdp: $(BPF_OBJ)
-	bpftool net detach $(XDP_NAME) dev $(DEV)
+	-bpftool net detach xdpgeneric dev $(DEV)
 	rm -f $(BPF_PINNED_PATH)
 	bpftool prog load $(BPF_OBJ) $(BPF_PINNED_PATH)
-	bpftool net attach $(XDP_NAME) pinned $(BPF_PINNED_PATH) dev $(DEV)
+	bpftool net attach xdpgeneric pinned $(BPF_PINNED_PATH) dev $(DEV)
 
 $(BPF_OBJ): %.o: %.c
 	clang -S \
@@ -28,7 +28,7 @@ $(BPF_OBJ): %.o: %.c
 	llc -march=bpf -filetype=obj -O2 -o $@ ${@:.o=.ll}
 
 clean:
-	-bpftool net detach $(XDP_NAME) dev $(DEV)
+	-bpftool net detach xdpgeneric dev $(DEV)
 	sudo rm -f $(BPF_PINNED_PATH)
 	rm -f $(BPF_OBJ)
 	rm -f ${BPF_OBJ:.o=.ll}

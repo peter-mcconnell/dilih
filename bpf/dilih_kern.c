@@ -1,4 +1,5 @@
-#include "dilih_kern.h"
+#include <linux/bpf.h>
+#include <bpf_helpers.h>
 
 struct perf_trace_event {
 	__u64 timestamp; // time elapsed since boot, excluding suspend time. see https://www.man7.org/linux/man-pages/man7/bpf-helpers.7.html
