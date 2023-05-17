@@ -1,7 +1,9 @@
 dilih
 =====
 
-A simple example project that shows how to build XDP eBPF programs in C and load them with Golang. This specific program will drop ~50% of packets on a given interface, allowing you to inspect the impact faulty network has on your applications. Note: you can also accomplish this functionality with `tc`.
+A simple example project that shows how to build XDP eBPF programs in C and load them with Golang; accompanying article: https://www.petermcconnell.com/posts/writing-an-xdp-ebpf-program/.
+
+This program will drop ~50% of packets on a given interface, allowing you to inspect the impact faulty network has on your applications. Note: you can also accomplish this functionality with `tc`.
 
 _drop it like it's hot_
 
