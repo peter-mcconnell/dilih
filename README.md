@@ -13,6 +13,7 @@ build dependencies
 This project was built and tested in the following environment:
 
 ```
+ - x86_64
  - linux kernel 5.15.0-71-generic
  - llvm 16.0.3 with -bpf target support (https://github.com/peter-mcconnell/.dotfiles/blob/master/tasks/llvm.yaml)
  - clang 16.0.3 (https://github.com/peter-mcconnell/.dotfiles/blob/master/tasks/llvm.yaml)
