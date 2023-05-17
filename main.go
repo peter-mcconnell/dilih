@@ -13,6 +13,12 @@ import (
 	"github.com/cilium/ebpf/perf"
 )
 
+const (
+	TYPE_ENTER = 1
+	TYPE_DROP  = 2
+	TYPE_PASS  = 3
+)
+
 type event struct {
 	TimeSinceBoot  uint64
 	ProcessingTime uint32
@@ -21,9 +27,9 @@ type event struct {
 
 const ringBufferSize = 128 // size of ring buffer used to calculate average processing times
 type ringBuffer struct {
-	data [ringBufferSize]uint32
+	data  [ringBufferSize]uint32
 	start int
-	size int
+	size  int
 }
 
 func (rb *ringBuffer) add(val uint32) {
@@ -32,7 +38,7 @@ func (rb *ringBuffer) add(val uint32) {
 	} else {
 		rb.size = 1
 	}
-	rb.data[rb.size - 1] = val
+	rb.data[rb.size-1] = val
 }
 
 func (rb *ringBuffer) avg() uint32 {
@@ -95,9 +101,9 @@ func main() {
 	}
 	defer perfEvent.Close()
 	buckets := map[uint8]uint32{
-		1:   0, // bpf program entered
-		2:   0, // bpf program dropped
-		3:   0, // bpf program passed
+		1: 0, // bpf program entered
+		2: 0, // bpf program dropped
+		3: 0, // bpf program passed
 	}
 
 	processingTimePassed := &ringBuffer{}
@@ -113,7 +119,7 @@ func main() {
 			}
 
 			var e event
-			if len(record.RawSample) < 9 {
+			if len(record.RawSample) < 12 {
 				fmt.Println("Invalid sample size")
 				continue
 			}
@@ -125,16 +131,17 @@ func main() {
 			e.Type = uint8(record.RawSample[12])
 			buckets[e.Type]++
 
-			if e.Type == 0 {
+			if e.Type == TYPE_ENTER {
 				continue
-			} else if e.Type == 2 {
+			}
+			if e.Type == TYPE_DROP {
 				processingTimeDropped.add(e.ProcessingTime)
-			} else if e.Type == 3 {
+			} else if e.Type == TYPE_PASS {
 				processingTimePassed.add(e.ProcessingTime)
 			}
 
 			fmt.Print("\033[H\033[2J")
-			fmt.Printf("total: %d. passed: %d. dropped: %d. passed processing time avg (ns): %d. dropped processing time avg (ns): %d\n", buckets[1], buckets[3], buckets[2], processingTimePassed.avg(), processingTimeDropped.avg())
+			fmt.Printf("total: %d. passed: %d. dropped: %d. passed processing time avg (ns): %d. dropped processing time avg (ns): %d\n", buckets[TYPE_ENTER], buckets[TYPE_PASS], buckets[TYPE_DROP], processingTimePassed.avg(), processingTimeDropped.avg())
 		}
 	}()
 
