@@ -1,4 +1,4 @@
-.PHONY: build build_bpf build_go build_docker clean run_docker push_docker
+.PHONY: build build_bpf build_go build_docker clean run_docker push_docker test
 .DEFAULT_GOAL = build
 
 DEV := ens160
@@ -17,6 +17,9 @@ build: build_bpf build_go build_docker
 
 clean:
 	$(MAKE) -C bpf clean
+
+test:
+	go test -v ./...
 
 run_docker:
 	docker run --net=host --cap-add SYS_ADMIN -u0 -e INTERFACE=$(DEV) --rm pemcconnell/dilih:$(TAG)

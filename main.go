@@ -27,29 +27,34 @@ type event struct {
 
 const ringBufferSize = 128 // size of ring buffer used to calculate average processing times
 type ringBuffer struct {
-	data  [ringBufferSize]uint32
-	start int
-	size  int
+	data   [ringBufferSize]uint32
+	start  int
+	pointer int
+	filled bool
 }
 
 func (rb *ringBuffer) add(val uint32) {
-	if rb.size < ringBufferSize {
-		rb.size++
+	if rb.pointer < ringBufferSize {
+		rb.pointer++
 	} else {
-		rb.size = 1
+		rb.filled = true
+		rb.pointer= 1
 	}
-	rb.data[rb.size-1] = val
+	rb.data[rb.pointer-1] = val
 }
 
-func (rb *ringBuffer) avg() uint32 {
-	if rb.size == 0 {
+func (rb *ringBuffer) avg() float32 {
+	if rb.pointer == 0 {
 		return 0
 	}
 	sum := uint32(0)
-	for i := 0; i < rb.size; i++ {
-		sum += uint32(rb.data[i])
+	for _, val := range rb.data {
+		sum += uint32(val)
 	}
-	return sum / uint32(rb.size)
+	if rb.filled {
+		return float32(sum) / float32(ringBufferSize)
+	}
+	return float32(sum) / float32(rb.pointer)
 }
 
 func main() {
@@ -141,7 +146,7 @@ func main() {
 			}
 
 			fmt.Print("\033[H\033[2J")
-			fmt.Printf("total: %d. passed: %d. dropped: %d. passed processing time avg (ns): %d. dropped processing time avg (ns): %d\n", buckets[TYPE_ENTER], buckets[TYPE_PASS], buckets[TYPE_DROP], processingTimePassed.avg(), processingTimeDropped.avg())
+			fmt.Printf("total: %d. passed: %d. dropped: %d. passed processing time avg (ns): %f. dropped processing time avg (ns): %f\n", buckets[TYPE_ENTER], buckets[TYPE_PASS], buckets[TYPE_DROP], processingTimePassed.avg(), processingTimeDropped.avg())
 		}
 	}()
 
